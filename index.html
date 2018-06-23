@@ -6,113 +6,52 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.css' rel='stylesheet' />
-    <link href='/route_color.geojson' />
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
+
+
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:100%; }
     </style>
 </head>
 <body>
-
 <style>
-</style>
+ </style>
+
 <div id='map'></div>
+
+
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoibGVuYWVtYXlhIiwiYSI6ImNpa3VhbXE5ZjAwMXB3eG00ajVyc2J6ZTIifQ.kmZ4yVcNrupl4H8EonM3aQ';
 
-var map = new mapboxgl.Map({
+const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/lenaemaya/cjiog3lqk0osj2spbg2kd4uei',
-    center: [37.672,55.748],
+    center: [37.623140, 55.755509],
+    minzoom: 8,
     zoom: 9.5
 });
 
-// var colors = ["#DF5DE8", "#75FF4A", "#0000FF"];
-//         var routes = map.queryRenderedFeatures({ layers: ['routes-light'] });
-//         if (routes.length) {
-//             console.log("Properties", routes[0].properties.color_id)
-//         }
-        
-
-  
-//      var newVar = function()   {for(i = 0; i < routes.length; i++)
-//             { map.setPaintProperty
-//                 ('routes-light', "line-color", ['#' + (Math.random().toString(16) + "000000").substring(2,8)]);
-//         }};
-
-// var data =[
-// {"route_muid": "3090318064678800405", "color": "#0000FF"},
-// {"route_muid": "3640398873461806650", "color": "#DF5DE8"},
-// {"route_muid":"3779056866279476069", "color": "#75FF4A"},
-// {"route_muid":"3779056903073749351", "color": "#4EE8CC"} ,
-// {"route_muid": "3779060760012756683", "color": "#7482FF"},
-// {"route_muid":"3779060790768381334", "color": "#0000FF"},
-// {"route_muid":"3750082377184589806", "color": "#DF5DE8"},
-// {"route_muid":"3750082423065869776", "color": "#75FF4A"},
-// {"route_muid":"3825082388265715359", "color": "#4EE8CC"},
-// {"route_muid":"3825082451857876967", "color": "#7482FF"},
-// {"route_muid":"3737539205644294700", "color": "#0000FF"},
-// {"route_muid":"3737539239900979915", "color": "#DF5DE8"},
-// {"route_muid":"3149690134622811717", "color": "#75FF4A"},
-// {"route_muid":"3149690175344718380", "color": "#4EE8CC"},
-// {"route_muid":"3887325123066309145", "color": "#7482FF"},
-// {"route_muid":"3887325162620225121", "color": "#0000FF"},
-// {"route_muid": "3750173333845505754", "color": "#DF5DE8"},
-// {"route_muid": "3750173365621742442", "color": "#75FF4A"},
-// {"route_muid": "3757640355441634788", "color": "#4EE8CC"},
-// {"route_muid": "3757640406981242340", "color": "#7482FF"},
-// {"route_muid": "3757646104587066313", "color": "#0000FF"},
-// {"route_muid": "3757646138037729570", "color": "#DF5DE8"},
-// {"route_muid": "3858569267363795768", "color": "#75FF4A"},
-// {"route_muid": "3858569298304460575", "color": "#4EE8CC"},
-// {"route_muid": "3426630431942111422", "color": "#7482FF"},
-// {"route_muid": "3426630438364318710", "color": "#0000FF"},
-// {"route_muid": "3570520191138914844", "color": "#DF5DE8"},
-// {"route_muid": "3570520228687004566", "color": "#75FF4A"},
-// {"route_muid": "3841364483620710199", "color": "#4EE8CC"},
-// {"route_muid": "3841364507341999590", "color": "#7482FF"},
-// {"route_muid": "3206783619495255764", "color": "#0000FF"},
-// {"route_muid": "3206783644228901520", "color": "#DF5DE8"},
-// {"route_muid": "3757659734334074340", "color": "#75FF4A"}
-// ];
-
-
-
-
-
-
-
-map.on('load', function () {
-    map.addSource("routes", {
-        "type": "geojson",
-        //"data": "./route_color.geojson",
-        "data": "https://raw.githubusercontent.com/lena-emaya/m3experiment/master/m3experiment/route_color.geojson"
+map.on('load', () => {
+  map.addSource("routes", {
+        type: "geojson",
+        data: "https://raw.githubusercontent.com/lena-emaya/m3routes/master/route_color.geojson"
+    });
+    map.addSource('circleData', {
+        type: 'geojson',
+        data: {
+            type: 'FeatureCollection',
+            features: [],
+        },
     });
 
-//    function setStates(e) {
-//         if (e.sourceId === 'routes' && e.isSourceLoaded) {
-//             map.off('sourcedata', setStates);
-//             data.forEach(function(row) {
-//                 map.setFeatureState({source: 'routes', sourceLayer: 'routes-light', id: row["route_muid"]}, row);
-//             });
-//         }
-//     }
-
-//     if (map.isSourceLoaded('routes')) {
-//         setStates({ sourceId: 'routes', isSourceLoaded: true});
-//     } else {
-//         map.on('sourcedata', setStates);
-//     }
-
-
     map.addLayer({
-        "id": "routes",
-        "type": "line",
-        "source": "routes",
-        "paint": {
+        id: "routes",
+        type: "line",
+        source: "routes",
+        paint: {
             "line-width": 1.5,
-            "line-color":  
-            [
+            "line-color": [
                 "match",
                 ["get", "color_id"],
                 1,
@@ -132,220 +71,251 @@ map.on('load', function () {
                 8,
                 "hsl(230, 56%, 73%)",
                 "hsl(311, 86%, 69%)"
-            ],
-            "line-opacity": 1
-        }
+      ],
+      "line-opacity": 0
+    }
     });
 
 
     map.addLayer({
-        "id": "routes-light",
-        "type": "line",
-        "source": "routes",
-        "paint": {
-            "line-width": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    10,
-                    1,
-                    22,
-                    3.5
-                ],
-            "line-opacity": 0,
-            "line-color": 
-            [
-                "match",
-                ["get", "color_id"],
-                1,
-                "hsl(0, 84%, 64%)",
-                2,
-                "hsl(257, 84%, 52%)",
-                3,
-                "hsl(86, 96%, 53%)",
-                4,
-                "hsl(190, 97%, 60%)",
-                5,
-                "hsl(242, 74%, 49%)",
-                6,
-                "hsl(0, 86%, 69%)",
-                7,
-                "hsl(138, 93%, 26%)",
-                8,
-                "hsl(230, 56%, 73%)",
-                "hsl(311, 86%, 69%)"
-            ],
-            "line-offset": [
-                "match",
-                ["get", "number"],
-                "М7",
-                2,
-                "Т10",
-                3,
-                "М9",
-                4,
-                "М3",
-                5,
-                "М4",
-                6,
-                "255",
-                7,
-                "904",
-                8,
-                "Т25",
-                1,
-                -1
-                ]
-            },
-        "filter": ["in", "route_muid", ""]
+    id: "routes-light",
+    type: "line",
+    source: "routes",
+    paint: {
+      "line-width": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        10,
+        2,
+        22,
+        8.5
+      ],
+      "line-opacity": 1,
+      "line-color": [
+        "match",
+        ["get", "color_id"],
+        1,
+        "#FF005D",
+        2,
+        "#0085B6",
+        3,
+        "#0BB4C1",
+        4,
+        "#00D49D",
+        5,
+        "#FEDF03",
+        6,
+        "#0030FF",
+        7,
+        "#AD00CC",
+        8,
+        "#FA009C",
+        9,
+        "#94FD4F",
+        10,
+        "#39DA3F",
+        11,
+        "#0055BD",
+        12,
+        "#340652",
+        13,
+        "#F0AD4E",
+        14,
+        "#FF392D",
+        "#4DA5D1"
+      ],
+      "line-offset": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        9,
+        [
+          "match",
+          ["get", "color_id"],
+          1,
+          -5,
+          2,
+          -4,
+          3,
+          -3,
+          4,
+          -2,
+          5,
+          -1,
+          6,
+          2,
+          7,
+          3,
+          8,
+          1,
+          9,
+          4,
+          10,
+          3.7,
+          11,
+          1.7,
+          12,
+          2.4,
+          13,
+          3.6,
+          14,
+          4,
+          0
+        ],
+        22,
+        [
+          "match",
+          ["get", "number"],
+          1,
+          -40,
+          2,
+          -30,
+          3,
+          -20,
+          4,
+          -10,
+          5,
+          -5,
+          6,
+          -35,
+          7,
+          -6,
+          8,
+          10,
+          9,
+          20,
+          10,
+          30,
+          11,
+          40,
+          12,
+          50,
+          13,
+          -17,
+          14,
+          4,
+          0
+        ]
+      ]
+    },
+    "filter": ["in", "route_muid", ""]
     });
-
-
+    
+    
     map.addLayer({
         "id": "shield",
         "type": "symbol",
         "source": "routes",
         "layout": {
-                "text-field": [
-                    "to-string",
-                    [
-                        "get",
-                        "number"
-                    ]
-                ],
-                "symbol-placement": "line",
-                "text-size": 11,
-                "icon-size": 0.5,
-                "symbol-spacing": 300,
-                "icon-image": "bus_shield",
-                "visibility": "none"
-            },
-            "paint": {
-                "text-color": "hsl(0, 4%, 100%)",
-                "icon-opacity": 1
-            }
+      "text-field": [
+        "to-string",
+        ["get", "number"]
+      ],
+      "symbol-placement": "line",
+      "text-size": 11,
+      "icon-size": 0.5,
+      "symbol-spacing": 300,
+      "icon-image": "bus_shield",
+      "visibility": "none"
+    },
+        "paint": {
+      "text-color": "hsl(0, 4%, 100%)",
+            "icon-opacity": 1
+        }
     });
-
-
-    map.addLayer({
-        "id": "shield-light",
-        "type": "symbol",
-        "source": "routes",
-        "layout": {
-                "text-field": [
-                    "to-string",
-                    [
-                        "get",
-                        "number"
-                    ]
-                ],
-                "symbol-placement": "line",
-                "text-size": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    10,
-                    8,
-                    22,
-                    11
-                ],
-                "icon-size": 0.65,
-                "icon-text-fit-padding": [0.05,0.05,0.05,0.05],
-                "symbol-spacing": 300,
-                "icon-image": "bus_shield",
-                "icon-allow-overlap": false,
-                "icon-offset": [
-                    "match",
-                    ["get", "number"],
-                    "М7", ["literal",[2,0]],
-                    "Т10",
-                    ["literal",[3,0]],
-                    "М9",
-                    ["literal",[4,0]],
-                    "М3",
-                    ["literal",[1,0]],
-                    "М4",
-                    ["literal",[6,0]],
-                    "255",
-                    ["literal",[7,0]],
-                    "904",
-                    ["literal",[8,0]],
-                    "Т25",
-                    ["literal",[1,0]],
-                    ["literal",[0,0]]
-                ]
-            },
-            "paint": {
-                "text-color": "hsl(0, 4%, 100%)",
-                "icon-opacity": 1
-            }
-    });
-
- 
- 
-
-
-
-
-
-    map.on('click', function(e) {
-       
-        var bbox = [[e.point.x - 10, e.point.y - 10], [e.point.x + 10, e.point.y + 10]];
-        var features = map.queryRenderedFeatures(bbox,{ layers: ['routes'] });
-        //console.log(map.queryRenderedFeatures(bbox,{ layers: ['routes-light'] }));
-
-
-        var randomHsl = function(opacity, random, saturation, lightness) {
-            if (!opacity) opacity = 1;
-            if (!saturation) saturation = 100;
-            if (!lightness) lightness = 50;
-            if (!random) random = Math.random();
-            res = "hsla(" + (random * 360) +
-                ", " + saturation + "% " +
-                ", " + lightness + "% " +
-                ", " + opacity + ")";
-            return res;
-        };
-
-        var ran = Math.random();
-        var colA = randomHsl(1,ran);
-
-
-        //var routes = map.queryRenderedFeatures({ layers: ['routes-light'] });
-        //routes.properties.color_id = '#' + (Math.random().toString(16) + "000000").substring(2,8);
-
-    // var routes = map.queryRenderedFeatures({ layers: ['routes-light'] });
-    //     if (routes.length) {
-    //         console.log("Properties", routes[0].properties.color_id)
-    //     }
-        
-
   
-    //  var newVar = function()   {for(i = 0; i < routes.length; i++)
-    //         { map.setLayoutProperty
-    //             ('routes-light', "line-color", ['#' + (Math.random().toString(16) + "000000").substring(2,8)]);
-    //     }};
-        
+    
+    
+    
+    map.addLayer({
+    "id": "shield-light",
+    "type": "symbol",
+    "source": "routes",
+    "layout": {
+      "text-field": [
+        "to-string",
+        ["get", "number"]
+      ],
+      "symbol-placement": "line",
+      "text-size": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        10,
+        8,
+        22,
+        11
+      ],
+      "icon-size": 0.65,
+      "icon-text-fit-padding": [0.05,0.05,0.05,0.05],
+      "symbol-spacing": 300,
+      "icon-image": "bus_shield",
+      "icon-allow-overlap": false,
+      // "icon-offset": [
+      //     "match",
+      //     ["get", "number"],
+      //     "М7", ["literal",[2,0]],
+      //     "Т10",
+      //     ["literal",[3,0]],
+      //     "М9",
+      //     ["literal",[4,0]],
+      //     "М3",
+      //     ["literal",[1,0]],
+      //     "М4",
+      //     ["literal",[6,0]],
+      //     "255",
+      //     ["literal",[7,0]],
+      //     "904",
+      //     ["literal",[8,0]],
+      //     "Т25",
+      //     ["literal",[1,0]],
+      //     ["literal",[0,0]]
+      // ]
+    },
+    "paint": {
+      "text-color": "hsl(0, 4%, 100%)",
+      "icon-opacity": 1
+    }
+  });
+    
+  map.addLayer({
+        id: 'data',
+        type: 'circle',
+        source: 'circleData',
+        paint: {
+            'circle-color': '#2EA7F9',
+            'circle-radius': 6,
+            'circle-stroke-width': 8,
+            'circle-stroke-color': '#fff',
+            "circle-stroke-opacity": 0.85
+        },
+    });
 
-
-        var filter = features.reduce(function(memo, feature) {
+  map.on('click', e => {
+        const bbox = [
+        [e.point.x - 10, e.point.y - 10],
+        [e.point.x + 10, e.point.y + 10]
+        ];
+        const features = map.queryRenderedFeatures(bbox, {
+        layers: ['routes']
+    });
+        const filter = features.reduce((memo, feature) => {
             memo.push(feature.properties.route_muid);
-            return memo;
-        }, ['in', 'route_muid']);
 
-
-        var filter2 = features.reduce(function(memo, feature) {
-            memo.push(feature.properties.route_muid);
-            return memo;
+      return memo;
         }, ['in', 'route_muid']);
+    const lngLat = Object.values(e.lngLat);
+    const points = turf.featureCollection([
+        turf.point(lngLat)
+    ]);
 
         map.setFilter("routes-light", filter);
-        map.setFilter("shield-light", filter2);
-
-
-
+        map.setFilter("shield-light", filter);
+    map.getSource('circleData').setData(points);
     });
 });
+
 </script>
 
 </body>
