@@ -19,7 +19,10 @@
  </style>
 
 <div id='map'></div>
-
+<button id = "addlayer" class='btn absolute top left' onClick="addLayerSpinner()">Add Layer</button>
+    <div id="loading-background" class='flex-parent flex-parent--center-cross flex-parent--center-main absolute top right bottom left bg-darken10 z5'>
+        <div id="spinner" class='flex-child loading'></div>
+</div>
 
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoibGVuYWVtYXlhIiwiYSI6ImNpa3VhbXE5ZjAwMXB3eG00ajVyc2J6ZTIifQ.kmZ4yVcNrupl4H8EonM3aQ';
@@ -32,7 +35,22 @@ const map = new mapboxgl.Map({
     zoom: 9.5
 });
 
+
+var framesPerSecond = 15; 
+var initialOpacity = 1
+var opacity = initialOpacity;
+var initialRadius = 12;
+var radius = initialRadius;
+var maxRadius = 25;
+
+const spinnerEl = document.getElementById('spinner');
+const backgroundEl = document.getElementById('loading-background');
+const addLayerBtn = document.getElementById('addlayer');
+
 map.on('load', () => {
+
+  loadingSpinner(false);
+  
   map.addSource("routes", {
         type: "geojson",
         data: "https://raw.githubusercontent.com/lena-emaya/m3routes/master/route_color.geojson"
@@ -284,13 +302,79 @@ map.on('load', () => {
         type: 'circle',
         source: 'circleData',
         paint: {
-            'circle-color': '#2EA7F9',
-            'circle-radius': 6,
-            'circle-stroke-width': 8,
-            'circle-stroke-color': '#fff',
-            "circle-stroke-opacity": 0.85
+            "circle-radius": initialRadius,
+            "circle-radius-transition": {duration: 0},
+            "circle-opacity-transition": {duration: 0},
+            "circle-color": "#2EA7F9"
         },
     });
+
+
+      map.addLayer({
+        id: 'data1',
+        type: 'circle',
+        source: 'circleData',
+        paint: {
+            "circle-radius": 4,
+            "circle-color": "#2EA7F9",
+            "circle-stroke-width": 2,
+            "circle-stroke-color": "#fff"
+        },
+    });
+
+
+function addLayerSpinner(){
+    loadingSpinner(true);
+    map.addLayer({
+        id: 'test',
+        source: 'addr',
+        'source-layer':'openaddresses',
+        type: 'circle',
+        paint: {
+            'circle-color':'pink'
+        }
+    });
+    map.on('render', stopSpinner);
+}
+
+function stopSpinner (e) {
+    if (e.target && e.target.loaded()) {
+        loadingSpinner(false);
+        map.off('render', stopSpinner)
+    }
+}
+function loadingSpinner(on) {
+    if (on) {
+        spinnerEl.classList.add('loading');
+        backgroundEl.classList.add('absolute');
+        backgroundEl.classList.remove('none');
+    } else {
+        spinnerEl.classList.remove('loading');
+        backgroundEl.classList.remove('absolute');
+        backgroundEl.classList.add('none');
+    }
+}
+
+
+ function animateMarker(timestamp) {
+        setTimeout(function(){
+            requestAnimationFrame(animateMarker);
+            radius += (maxRadius - radius) / framesPerSecond;
+            opacity -= ( .9 / framesPerSecond );
+            map.setPaintProperty('data', 'circle-radius', radius);
+            map.setPaintProperty('data', 'circle-opacity', opacity);
+            if (opacity <= 0) {
+                radius = initialRadius;
+                opacity = initialOpacity;
+            } 
+        }, 1000 / framesPerSecond);
+        
+    }
+    // Start the animation.
+    animateMarker(0);
+
+
+
 
   map.on('click', e => {
         const bbox = [
