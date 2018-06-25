@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Display a popup on click</title>
+    <title>m3_test</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.46.0/mapbox-gl.css' rel='stylesheet' />
@@ -15,25 +15,20 @@
     </style>
 </head>
 <body>
-<style>
- </style>
 
 <div id='map'></div>
-<button id = "addlayer" class='btn absolute top left' onClick="addLayerSpinner()">Add Layer</button>
-    <div id="loading-background" class='flex-parent flex-parent--center-cross flex-parent--center-main absolute top right bottom left bg-darken10 z5'>
-        <div id="spinner" class='flex-child loading'></div>
-</div>
+
 
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoibGVuYWVtYXlhIiwiYSI6ImNpa3VhbXE5ZjAwMXB3eG00ajVyc2J6ZTIifQ.kmZ4yVcNrupl4H8EonM3aQ';
-
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/lenaemaya/cjiog3lqk0osj2spbg2kd4uei',
     center: [37.623140, 55.755509],
-    minzoom: 8,
+    minZoom: 8,
     zoom: 9.5
 });
+
 
 
 var framesPerSecond = 15; 
@@ -43,15 +38,8 @@ var initialRadius = 12;
 var radius = initialRadius;
 var maxRadius = 25;
 
-const spinnerEl = document.getElementById('spinner');
-const backgroundEl = document.getElementById('loading-background');
-const addLayerBtn = document.getElementById('addlayer');
-
 map.on('load', () => {
-
-  loadingSpinner(false);
-  
-  map.addSource("routes", {
+    map.addSource("routes", {
         type: "geojson",
         data: "https://raw.githubusercontent.com/lena-emaya/m3routes/master/route_color.geojson"
     });
@@ -62,7 +50,8 @@ map.on('load', () => {
             features: [],
         },
     });
-
+  
+   
     map.addLayer({
         id: "routes",
         type: "line",
@@ -93,8 +82,8 @@ map.on('load', () => {
       "line-opacity": 0
     }
     });
-
-
+   
+    
     map.addLayer({
     id: "routes-light",
     type: "line",
@@ -116,7 +105,7 @@ map.on('load', () => {
         1,
         "#FF005D",
         2,
-        "#0085B6",
+        "#B566FF",
         3,
         "#0BB4C1",
         4,
@@ -132,16 +121,18 @@ map.on('load', () => {
         9,
         "#94FD4F",
         10,
-        "#39DA3F",
+        "#049649",
         11,
-        "#0055BD",
+        "#003972",
         12,
         "#340652",
         13,
         "#F0AD4E",
         14,
         "#FF392D",
-        "#4DA5D1"
+        15,
+        "#2EA7F9",
+        "#898787"
       ],
       "line-offset": [
         "interpolate",
@@ -181,38 +172,38 @@ map.on('load', () => {
           4,
           0
         ],
-        22,
+        19,
         [
           "match",
           ["get", "number"],
           1,
-          -40,
+          -50,
           2,
-          -30,
+          -40,
           3,
+          -30,
+          4,
           -20,
-          4,
-          -10,
           5,
-          -5,
+          -10,
           6,
-          -35,
+          0,
           7,
-          -6,
+          10,
           8,
-          10,
-          9,
           20,
-          10,
+          9,
           30,
-          11,
+          10,
           40,
+          11,
+          55,
           12,
-          50,
+          60,
           13,
-          -17,
+          -60,
           14,
-          4,
+          3,
           0
         ]
       ]
@@ -268,7 +259,41 @@ map.on('load', () => {
       "icon-size": 0.65,
       "icon-text-fit-padding": [0.05,0.05,0.05,0.05],
       "symbol-spacing": 300,
-      "icon-image": "bus_shield",
+      "icon-image": [
+            "match",
+            ["get", "color_id"],
+            1,
+            "bus_shield_1",
+            2,
+            "bus_shield_2",
+            3,
+            "bus_shield_3",
+            4,
+            "bus_shield_4",
+            5,
+            "bus_shield_5",
+            6,
+            "bus_shield_6",
+            7,
+            "bus_shield_7",
+            8,
+            "bus_shield_8",
+            9,
+            "bus_shield_9",
+            10,
+            "bus_shield_10",
+            11,
+            "bus_shield_11",
+            12,
+            "bus_shield_12",
+            13,
+            "bus_shield_13",
+            14,
+            "bus_shield_14",
+            15,
+            "bus_shield_15",
+            "bus_shield_16"
+        ],
       "icon-allow-overlap": false,
       // "icon-offset": [
       //     "match",
@@ -308,8 +333,6 @@ map.on('load', () => {
             "circle-color": "#2EA7F9"
         },
     });
-
-
       map.addLayer({
         id: 'data1',
         type: 'circle',
@@ -321,40 +344,6 @@ map.on('load', () => {
             "circle-stroke-color": "#fff"
         },
     });
-
-
-function addLayerSpinner(){
-    loadingSpinner(true);
-    map.addLayer({
-        id: 'test',
-        source: 'addr',
-        'source-layer':'openaddresses',
-        type: 'circle',
-        paint: {
-            'circle-color':'pink'
-        }
-    });
-    map.on('render', stopSpinner);
-}
-
-function stopSpinner (e) {
-    if (e.target && e.target.loaded()) {
-        loadingSpinner(false);
-        map.off('render', stopSpinner)
-    }
-}
-function loadingSpinner(on) {
-    if (on) {
-        spinnerEl.classList.add('loading');
-        backgroundEl.classList.add('absolute');
-        backgroundEl.classList.remove('none');
-    } else {
-        spinnerEl.classList.remove('loading');
-        backgroundEl.classList.remove('absolute');
-        backgroundEl.classList.add('none');
-    }
-}
-
 
  function animateMarker(timestamp) {
         setTimeout(function(){
@@ -373,9 +362,6 @@ function loadingSpinner(on) {
     // Start the animation.
     animateMarker(0);
 
-
-
-
   map.on('click', e => {
         const bbox = [
         [e.point.x - 10, e.point.y - 10],
@@ -386,20 +372,17 @@ function loadingSpinner(on) {
     });
         const filter = features.reduce((memo, feature) => {
             memo.push(feature.properties.route_muid);
-
       return memo;
         }, ['in', 'route_muid']);
     const lngLat = Object.values(e.lngLat);
     const points = turf.featureCollection([
         turf.point(lngLat)
     ]);
-
         map.setFilter("routes-light", filter);
         map.setFilter("shield-light", filter);
     map.getSource('circleData').setData(points);
     });
 });
-
 </script>
 
 </body>
