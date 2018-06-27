@@ -10,7 +10,7 @@
 
 
     <style>
-            body {
+         body {
                 margin: 0;
                 padding: 0;
             }
@@ -41,22 +41,22 @@
             svg rect {
                 fill: #2EA7F9;
             }
-            </style>
+    </style>
 </head>
 <body>
-    
-    <div class="loader loader--style1" title="0" id="loader">
-        <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="60px" height="60px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-            <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-        s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-        c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z" />
-            <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-        C22.32,8.481,24.301,9.057,26.013,10.047z">
-                <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite" />
-            </path>
-        </svg>
-    </div>
-    <div id='map'></div>
+ 
+        <div class="loader loader--style1" title="0" id="loader">
+                <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="60px" height="60px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+                    <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+                s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+                c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z" />
+                    <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+                C22.32,8.481,24.301,9.057,26.013,10.047z">
+                        <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite" />
+                    </path>
+                </svg>
+            </div>
+            <div id='map'></div>
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoibW9zY293Y2l0eW1hcCIsImEiOiJjajc3ZnQ1aGUxem41MzNudXU3MnBnZDA2In0.akDBtVzE-R3FgVs64ObGLg';
 const map = new mapboxgl.Map({
@@ -77,9 +77,9 @@ var radius = initialRadius;
 var maxRadius = 25;
 
 map.on('load', () => {
-    map.addSource('roads', {
-        type: 'geojson',
-        data: "https://raw.githubusercontent.com/lena-emaya/m3avgspeed/master/data/inter.geojson",
+    map.addSource("routes", {
+        type: "geojson",
+        data: "https://raw.githubusercontent.com/lena-emaya/m3routes/master/data/route_color.geojson"
     });
     map.addSource('circleData', {
         type: 'geojson',
@@ -93,53 +93,53 @@ map.on('load', () => {
     map.addLayer({
         id: "routes",
         type: "line",
-        source: "roads",
+        source: "routes",
         paint: {
             "line-width": 1.5,
-            "line-color": 
-                "hsl(311, 86%, 69%)",
+            "line-color": [
+                "match",
+                ["get", "color_id"],
+                1,
+                "hsl(0, 84%, 64%)",
+                2,
+                "hsl(257, 84%, 52%)",
+                3,
+                "hsl(86, 96%, 53%)",
+                4,
+                "hsl(190, 97%, 60%)",
+                5,
+                "hsl(242, 74%, 49%)",
+                6,
+                "hsl(0, 86%, 69%)",
+                7,
+                "hsl(138, 93%, 26%)",
+                8,
+                "hsl(230, 56%, 73%)",
+                "hsl(311, 86%, 69%)"
+      ],
       "line-opacity": 0
     }
     });
-
+   
+    
     map.addLayer({
     id: "routes-light",
     type: "line",
-    source: "roads",
+    source: "routes",
     paint: {
       "line-width": [
-  "interpolate",
-  ["linear"],
-  ["zoom"],
-  9,
-  [
-    "interpolate",
-    ["linear"],
-    ["get", "inerval"],
-    12,
-    2.5,
-    24,
-    1.7,
-    40,
-    1
-  ],
-  22,
-  [
-    "interpolate",
-    ["linear"],
-    ["get", "inerval"],
-    12,
-    9,
-    24,
-    5,
-    40,
-    2.5
-  ]
-],
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        10,
+        2,
+        22,
+        8.5
+      ],
       "line-opacity": 1,
       "line-color": [
         "match",
-        ["get", "offset"],
+        ["get", "color_id"],
         1,
         "#FF005D",
         2,
@@ -160,174 +160,125 @@ map.on('load', () => {
         "#94FD4F",
         10,
         "#049649",
-        
-        "#898787"], 
-       "line-offset": [
-  "interpolate",
-  ["linear"],
-  ["zoom"],
-  10,
-  [
-    "interpolate",
-    ["linear"],
-    ["get", "inerval"],
-    4.634,
-    6,
-    9.018,
-    3,
-    14.000,
-    1.5,
-    19.500,
-    0.75,
-    24.622,
-    0.35,
-    28.128,
-    -0.35,
-    32.000,
-    -0.75,
-    36.846,
-    -1.5,
-    40.000,
-    0
-  ],
-  22,
-  [
-    "interpolate",
-    ["linear"],
-    ["get", "inerval"],
-    4.634,
-    60,
-    9.018,
-    40,
-    14.000,
-    20,
-    19.500,
-    10,
-    24.622,
-    1,
-    28.128,
-    -10,
-    32.000,
-    -20,
-    36.846,
-    -40,
-    40.000,
-    0
-    ]
-]
+        11,
+        "#003972",
+        12,
+        "#340652",
+        13,
+        "#F0AD4E",
+        14,
+        "#FF392D",
+        15,
+        "#2EA7F9",
+        "#898787"
+      ],
+      "line-offset": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        9,
+        [
+          "match",
+          ["get", "color_id"],
+          1,
+          -5,
+          2,
+          -4,
+          3,
+          -3,
+          4,
+          -2,
+          5,
+          -1,
+          6,
+          2,
+          7,
+          3,
+          8,
+          1,
+          9,
+          4,
+          10,
+          3.7,
+          11,
+          1.7,
+          12,
+          2.4,
+          13,
+          3.6,
+          14,
+          4,
+          0
+        ],
+        19,
+        [
+          "match",
+          ["get", "number"],
+          1,
+          -50,
+          2,
+          -40,
+          3,
+          -30,
+          4,
+          -20,
+          5,
+          -10,
+          6,
+          0,
+          7,
+          10,
+          8,
+          20,
+          9,
+          30,
+          10,
+          40,
+          11,
+          55,
+          12,
+          60,
+          13,
+          -60,
+          14,
+          3,
+          0
+        ]
+      ]
     },
     "filter": ["in", "route_muid", ""]
-    }); 
-
-
-//     map.addLayer({
-//     id: "routes-light",
-//     type: "line",
-//     source: "roads",
-//     paint: {
-//       "line-width": [
-//         "interpolate",
-//         ["linear"],
-//         ["zoom"],
-//         10,
-//         2,
-//         22,
-//         8.5
-//       ],
-//       "line-opacity": 1,
-//       "line-color":  [ 
-//                     "step", 
-//                     [ 
-//                         "get", 
-//                         "inerval"
-//                     ], 
-//                     "#ff1a40", 
-//                     16, 
-//                     "#FFC533", 
-//                     30, 
-//                     "#36E0FF", 
-//                     54, 
-//                     "hsl(125, 87%, 67%)"
-//                 ],
-//        "line-offset":[
-//   "interpolate",
-//   ["linear"],
-//   ["zoom"],
-//   10,
-//   [
-//     "interpolate",
-//     ["linear"],
-//     ["get", "offset"],
-//     1,
-//     0.5,
-//     2,
-//     1.2,
-//     3,
-//     1.95,
-//     4,
-//     -0.5,
-//     5,
-//     -1.2,
-//     6,
-//     -1.95,
-//     7,
-//     -2.65,
-//     8,
-//     -3.5,
-//     9,
-//     3.5,
-//     10,
-//     0
-//   ],
-//   18,
-//   [
-//     "interpolate",
-//     ["linear"],
-//     ["get", "offset"],
-//     1,
-//     1.75,
-//     2,
-//     4,
-//     3,
-//     6.5,
-//     4,
-//     -1.75,
-//     5,
-//     -4,
-//     6,
-//     -6.5,
-//     7,
-//     -8,
-//     8,
-//     -10.3,
-//     9,
-//     10.3,
-//     10,
-//     0
-//   ]
-// ]
-//     },
-//     "filter": ["in", "route_muid", ""]
-//     }); 
-    
-    
-    
+    });
     
     
     map.addLayer({
-        id: "shield",
-        type: "symbol",
-        source: "roads",
+        "id": "shield",
+        "type": "symbol",
+        "source": "routes",
         "layout": {
+      "text-field": [
+        "to-string",
+        ["get", "number"]
+      ],
+      "symbol-placement": "line",
+      "text-size": 11,
+      "icon-size": 0.5,
+      "symbol-spacing": 300,
+      "icon-image": "bus_shield",
       "visibility": "none"
     },
         "paint": {
+      "text-color": "hsl(0, 4%, 100%)",
+            "icon-opacity": 1
         }
     });
+  
+    
+    
+    
     map.addLayer({
     "id": "shield-light",
     "type": "symbol",
-    "source": "roads",
+    "source": "routes",
     "layout": {
       "text-field": [
         "to-string",
@@ -346,8 +297,62 @@ map.on('load', () => {
       "icon-size": 0.65,
       "icon-text-fit-padding": [0.05,0.05,0.05,0.05],
       "symbol-spacing": 300,
-      "icon-image": "bus_shield_15",
+      "icon-image": [
+            "match",
+            ["get", "color_id"],
+            1,
+            "bus_shield_1",
+            2,
+            "bus_shield_2",
+            3,
+            "bus_shield_3",
+            4,
+            "bus_shield_4",
+            5,
+            "bus_shield_5",
+            6,
+            "bus_shield_6",
+            7,
+            "bus_shield_7",
+            8,
+            "bus_shield_8",
+            9,
+            "bus_shield_9",
+            10,
+            "bus_shield_10",
+            11,
+            "bus_shield_11",
+            12,
+            "bus_shield_12",
+            13,
+            "bus_shield_13",
+            14,
+            "bus_shield_14",
+            15,
+            "bus_shield_15",
+            "bus_shield_16"
+        ],
       "icon-allow-overlap": false,
+      // "icon-offset": [
+      //     "match",
+      //     ["get", "number"],
+      //     "М7", ["literal",[2,0]],
+      //     "Т10",
+      //     ["literal",[3,0]],
+      //     "М9",
+      //     ["literal",[4,0]],
+      //     "М3",
+      //     ["literal",[1,0]],
+      //     "М4",
+      //     ["literal",[6,0]],
+      //     "255",
+      //     ["literal",[7,0]],
+      //     "904",
+      //     ["literal",[8,0]],
+      //     "Т25",
+      //     ["literal",[1,0]],
+      //     ["literal",[0,0]]
+      // ]
     },
     "paint": {
       "text-color": "hsl(0, 4%, 100%)",
@@ -396,11 +401,12 @@ map.on('load', () => {
     // Start the animation.
     animateMarker(0);
 
-     map.on('data', function(e) {
-            if (e.dataType === 'source' && e.sourceId === 'roads') {
+
+ map.on('data', function(e) {
+            if (e.dataType === 'source' && e.sourceId === 'routes') {
                 document.getElementById("loader").style.visibility = "hidden";
             }
-        })
+ });
 
   map.on('click', e => {
         const bbox = [
@@ -418,7 +424,6 @@ map.on('load', () => {
     const points = turf.featureCollection([
         turf.point(lngLat)
     ]);
-        //map.setFilter("routes-light1", filter);
         map.setFilter("routes-light", filter);
         map.setFilter("shield-light", filter);
     map.getSource('circleData').setData(points);
