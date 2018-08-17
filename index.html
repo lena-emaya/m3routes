@@ -10,548 +10,511 @@
 
 
     <style>
-            body {
-                margin: 0;
-                padding: 0;
-            }
+      body {
+        margin: 0;
+        padding: 0;
+      }
             
-            #map {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                width: 100%;
-            }
-            
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .panel {
+        position: fixed;
+        top: 5px;
+        left: 10px;   
+        display: flex;
+        flex-direction: column;    
+        width: 200px;
+        max-height: 100%;
+        padding: 10px;
+        z-index: 2;
+        flex: 0 0 auto;    
+        border-radius: 10px;
+        margin: 7px;    
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: normal;  
+        font-size: 14px;    
+        background-color: #fff;    
+        box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
+       }
+      
+ #menu {
+        background: #fff;
+        display: flex;
+        
+        margin: 7px;
+        border-radius: 3px;
+        width: 120px;
+        border: 1px solid rgba(0,0,0,0.4);
+        
+    }
+
+    #menu a {
+        font-size: 13px;
+        color: #404040;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        text-align: center;
+    }
+
+    #menu a:last-child {
+        border: none;
+    }
+
+    #menu a:hover {
+        background-color: #f8f8f8;
+        color: #404040;
+    }
+
+    #menu a.active {
+        background-color: #3887be;
+        color: #ffffff;
+    }
+
+    #menu a.active:hover {
+        background: #3074a4;
+    }
+
+ 
 
             
-            .loader {
-                height: 150px;
-                width: 40%;
-                position: fixed;
-                top: 48%;
-                left: 48%;
-                margin: 0%;
-                z-index: 9999;
-            }
-            /*
-          Set the color of the icon
-        */
-            
-            svg path,
-            svg rect {
-                fill: #2EA7F9;
-            }
-            </style>
+    </style>     
 </head>
 <body>
     
-    <div class="loader loader--style1" title="0" id="loader">
-        <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="60px" height="60px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
-            <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
-        s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
-        c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z" />
-            <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
-        C22.32,8.481,24.301,9.057,26.013,10.047z">
-                <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="0.5s" repeatCount="indefinite" />
-            </path>
-        </svg>
+<!-- <div class='panel'>
+    <div class='hourfilter'>
+        <div class='button'>утро</div>
+        <div class='button'>день</div>
+        <div class='button'>вечер</div>
     </div>
-    <div id='map'></div>
+</div>     -->
+
+<!-- <div class='map-overlay-inner'>
+    
+</div> -->
+   
+<div id='map'></div>
+<div class=panel>
+    <label id='day_time'></label>
+    <input id='slider' type='range' min='0' max='2' step='1' value='0' />
+    <nav id="menu"></nav>  
+<div>
 <script>
+
 mapboxgl.accessToken = 'pk.eyJ1IjoibW9zY293Y2l0eW1hcCIsImEiOiJjajc3ZnQ1aGUxem41MzNudXU3MnBnZDA2In0.akDBtVzE-R3FgVs64ObGLg';
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/moscowcitymap/cjiomhg5w29ta2sq80fv48hs2',
     center: [37.623140, 55.755509],
-    minZoom: 8,
+    minZoom: 9,
     maxZoom:18,
     zoom: 9.5
 });
 
+const points ={
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "longitude": 37.47751, "latitude": 55.68583, "point_id": 1 }, "geometry": { "type": "Point", "coordinates": [ 37.477512496004607, 55.685832401822807 ] } },
+{ "type": "Feature", "properties": { "id": 2, "longitude": 37.5322, "latitude": 55.67862, "point_id": 2 }, "geometry": { "type": "Point", "coordinates": [ 37.532204229564648, 55.678622407845666 ] } },
+{ "type": "Feature", "properties": { "id": 5, "longitude": 37.48132, "latitude": 55.64885, "point_id": 5 }, "geometry": { "type": "Point", "coordinates": [ 37.48132187048143, 55.648847939103604 ] } },
+{ "type": "Feature", "properties": { "id": 6, "longitude": 37.61655, "latitude": 55.6731, "point_id": 6 }, "geometry": { "type": "Point", "coordinates": [ 37.61655466440849, 55.673098960290638 ] } }
+]
+}
 
+var day_times = [
+    'morning',
+    'day',
+    'evening'
+];
+ 
+function filterBy(day_time) {
 
-var framesPerSecond = 15; 
-var initialOpacity = 1
-var opacity = initialOpacity;
-var initialRadius = 12;
-var radius = initialRadius;
-var maxRadius = 25;
+var filters = ['==', 'day_time', day_time];
+map.setFilter('isochrones-highlighted', filters);
+map.setFilter('isochrones-highlighted2', filters);
+map.setLayoutProperty('isochrones-highlighted', 'visibility', 'none');
+map.setLayoutProperty('isochrones-highlighted2', 'visibility', 'none');
+//map.setPaintProperty('isochrones-highlighted', 'fill-opacity', 0);
+map.on('click', (e) => {
+        
+        var bbox = [[e.point.x - 2, e.point.y - 2], [e.point.x + 2, e.point.y + 2]];
+        var features= map.queryRenderedFeatures(bbox, { layers: ['isochrones'] });
 
-map.on('load', () => {
-    map.addSource('roads', {
-        type: 'geojson',
-        data: "https://raw.githubusercontent.com/lena-emaya/m3avgspeed/master/data/inter.geojson",
+        
+        var filter = features.reduce(function(memo, feature) {
+            memo.push(feature.properties.point_id);
+            return memo;
+        }, ['in', 'point_id']);
+        var new_Filter = ['all',filter,filters]
+        map.setFilter("isochrones-highlighted", new_Filter );
+        map.setFilter("isochrones-highlighted2", new_Filter );
+        map.setLayoutProperty('isochrones-highlighted', 'visibility', 'visible');
+         map.setLayoutProperty('isochrones-highlighted2', 'visibility', 'visible');
+        
+        
     });
-    map.addSource('circleData', {
-        type: 'geojson',
-        data: {
-            type: 'FeatureCollection',
-            features: [],
-        },
+
+// Set the label to the month
+document.getElementById('day_time').textContent = day_times[day_time];
+}
+
+
+
+map.on( 'load', () => {
+    map.addSource('isochrones', {
+            'type': 'geojson',
+            'data': isochrones
     });
-  
-   
-    map.addLayer({
-        id: "routes",
-        type: "line",
-        source: "roads",
-        paint: {
-            "line-width": 1.5,
-            "line-color": 
-                "hsl(311, 86%, 69%)",
-      "line-opacity": 0
-    }
+    map.addSource('points', {
+            'type': 'geojson',
+            'data': points
     });
 
-    map.addLayer({
-    id: "routes-light",
-    type: "line",
-    source: "roads",
-    paint: {
-        "line-width": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            9,
-            [
-              "interpolate",
-              ["linear"],
-              ["get", "inerval"],
-              12,
-              2.5,
-              24,
-              1.7,
-              40,
-              1
-            ],
-            22,
-            [
-              "interpolate",
-              ["linear"],
-              ["get", "inerval"],
-              12,
-              9,
-              24,
-              5,
-              40,
-              2.5
-            ]
-        ],
-      "line-opacity": 1,
-      "line-color": [
-            "step",
-            ["get", "offset"],
-            "#0000ff",
-            1,
-            "#ff00ff",
-            2,
-            "#009eff",
-            3,
-            "#ff0040",
-            4,
-            "#ff7f00",
-            5,
-            "#00ffc2",
-            6,
-            "#d4ff00",
-            7,
-            "#00ff2e",
-            8,
-            "#ffbe00",
-            9,
-            "#7178cb"
-            ],
-            "line-offset": [
-             "interpolate",
-             ["linear"],
-             ["zoom"],
-             10,
-             [
-               "interpolate",
-               ["linear"],
-               ["get", "inerval"],
-               4.634,
-               1.5,
-               9.018,
-               1.3,
-               14,
-               1.2,
-               19,
-               1,
-               24,
-               0.8,
-               28,
-               0.6,
-               32,
-               0.4,
-               36,
-               0.2,
-               40,
-               0
-             ],
-             22,
-             [
-               "interpolate",
-               ["linear"],
-               ["get", "inerval"],
-               4.634,
-               50,
-               9.018,
-               35,
-               14,
-               21,
-               19,
-               16,
-               24,
-               13,
-               28,
-               10,
-               32,
-               6,
-               36,
-               3,
-               40,
-               0
-             ]
-        ]
-    },
-    "filter": ["in", "route_muid", ""]
-    }); 
+    map.addSource('routes', {
+        'type': 'geojson',
+        'data': curroutes
+    });
 
+    isochrones.features = isochrones.features.map(function(d) {
+            d.properties.day_time = d.properties.day_time;
+            
+            return d;
+    });
 
-//     map.addLayer({
-//     id: "routes-light",
-//     type: "line",
-//     source: "roads",
-//     paint: {
-//       "line-width": [
-//         "interpolate",
-//         ["linear"],
-//         ["zoom"],
-//         10,
-//         2,
-//         22,
-//         8.5
-//       ],
-//       "line-opacity": 1,
-//       "line-color":  [ 
-//                     "step", 
-//                     [ 
-//                         "get", 
-//                         "inerval"
-//                     ], 
-//                     "#ff1a40", 
-//                     16, 
-//                     "#FFC533", 
-//                     30, 
-//                     "#36E0FF", 
-//                     54, 
-//                     "hsl(125, 87%, 67%)"
-//                 ],
-//        "line-offset":[
-//   "interpolate",
-//   ["linear"],
-//   ["zoom"],
-//   10,
-//   [
-//     "interpolate",
-//     ["linear"],
-//     ["get", "offset"],
-//     1,
-//     0.5,
-//     2,
-//     1.2,
-//     3,
-//     1.95,
-//     4,
-//     -0.5,
-//     5,
-//     -1.2,
-//     6,
-//     -1.95,
-//     7,
-//     -2.65,
-//     8,
-//     -3.5,
-//     9,
-//     3.5,
-//     10,
-//     0
-//   ],
-//   18,
-//   [
-//     "interpolate",
-//     ["linear"],
-//     ["get", "offset"],
-//     1,
-//     1.75,
-//     2,
-//     4,
-//     3,
-//     6.5,
-//     4,
-//     -1.75,
-//     5,
-//     -4,
-//     6,
-//     -6.5,
-//     7,
-//     -8,
-//     8,
-//     -10.3,
-//     9,
-//     10.3,
-//     10,
-//     0
-//   ]
-// ]
-//     },
-//     "filter": ["in", "route_muid", ""]
-//     }); 
-    
-    
-    
-    
-    
     map.addLayer({
-        id: "shield",
-        type: "symbol",
-        source: "roads",
-        "layout": {
-      "visibility": "none"
-    },
-        "paint": {
+        'id': 'isochrones',
+        'type': 'fill',
+        'source': 'isochrones',
+        
+        'paint': {
+            'fill-color': '#088',
+            'fill-opacity': 0
         }
     });
+
     map.addLayer({
-    "id": "shield-light",
-    "type": "symbol",
-    "source": "roads",
-    "layout": {
-      "text-field": [
-        "to-string",
-        ["get", "number"]
-      ],
-      "symbol-placement": "line",
-      //"text-allow-overlap": true,
-      "text-size": [
-        "interpolate",
-        ["linear"],
-        ["zoom"],
-        10,
-        8,
-        22,
-        11
-      ],
-      "text-offset": [
-        "interpolate",
-        ["linear"],
-        ["zoom"],
-        10,
-        [
-          "interpolate",
-          ["linear"],
-          ["get", "inerval"],
-          4.634,
-          ["literal", [0, 0]],
-          9.018,
-          ["literal", [0, 0]],
-          14,
-          ["literal", [0, 0]],
-          19,
-          ["literal", [0, 0]],
-          24,
-          ["literal", [0, 0]],
-          28,
-          ["literal", [0, 0]],
-          32,
-          ["literal", [0, 0]],
-          36,
-          ["literal", [0, 0]],
-          40,
-          ["literal", [0, 0]]
-        ],
-        22,
-        [
-          "interpolate",
-          ["linear"],
-          ["get", "inerval"],
-          4.634,
-          ["literal", [0, 8]],
-          9.018,
-          ["literal", [0, 5]],
-          14,
-          ["literal", [0, 3]],
-          19,
-          ["literal", [0, 2.5]],
-          24,
-          ["literal", [0, 2]],
-          28,
-          ["literal", [0, 1.5]],
-          32,
-          ["literal", [0, 1]],
-          36,
-          ["literal", [0, 0.5]],
-          40,
-          ["literal", [0, 0]]
-        ]
-        ],
-      "icon-size": 0.65,
-      "icon-text-fit-padding": [0.05,0.05,0.05,0.05],
-      "symbol-spacing": 200,
-      "icon-image": [
-            "step",
-            ["get", "offset"],
-            "bus_r_1",
-            1,
-            "bus_r_2",
-            2,
-            "bus_r_3",
-            3,
-            "bus_r_4",
-            4,
-            "bus_r_5",
-            5,
-            "bus_r_6",
-            6,
-            "bus_r_7",
-            7,
-            "bus_r_8",
-            8,
-            "bus_r_9",
-            9,
-            "bus_r_10"
-            ],
-      //"icon-allow-overlap": true,
-      "icon-offset": [
-        "interpolate",
-        ["linear"],
-        ["zoom"],
-        10,
-        [
-          "interpolate",
-          ["linear"],
-          ["get", "inerval"],
-          4.634,
-          ["literal", [0, 1.5]],
-          9.018,
-          ["literal", [0, 1.3]],
-          14,
-          ["literal", [0, 1.2]],
-          19,
-          ["literal", [0, 1]],
-          24,
-          ["literal", [0, 0.8]],
-          28,
-          ["literal", [0, 0.6]],
-          32,
-          ["literal", [0, 0.4]],
-          36,
-          ["literal", [0, 0.2]],
-          40,
-          ["literal", [0, 0]]
-        ],
-        22,
-        [
-          "interpolate",
-          ["linear"],
-          ["get", "inerval"],
-          4.634,
-          ["literal", [0, 50]],
-          9.018,
-          ["literal", [0, 35]],
-          14,
-          ["literal", [0, 21]],
-          19,
-          ["literal", [0, 16]],
-          24,
-          ["literal", [0, 13]],
-          28,
-          ["literal", [0, 10]],
-          32,
-          ["literal", [0, 6]],
-          36,
-          ["literal", [0, 3]],
-          40,
-          ["literal", [0, 0]]
-        ]
-    ]       
-    },
-    "paint": {
-      "text-color": "#000",
-      "icon-opacity": 1
-    },
-    "filter": ["in", "route_muid", ""]
-  });
-    
-  map.addLayer({
-        id: 'data',
-        type: 'circle',
-        source: 'circleData',
-        paint: {
-            "circle-radius": initialRadius,
-            "circle-radius-transition": {duration: 0},
-            "circle-opacity-transition": {duration: 0},
-            "circle-color": "#2EA7F9"
-        },
-    });
-      map.addLayer({
-        id: 'data1',
-        type: 'circle',
-        source: 'circleData',
-        paint: {
-            "circle-radius": 4,
-            "circle-color": "#2EA7F9",
-            "circle-stroke-width": 2,
-            "circle-stroke-color": "#fff"
-        },
-    });
-
- function animateMarker(timestamp) {
-        setTimeout(function(){
-            requestAnimationFrame(animateMarker);
-            radius += (maxRadius - radius) / framesPerSecond;
-            opacity -= ( .9 / framesPerSecond );
-            map.setPaintProperty('data', 'circle-radius', radius);
-            map.setPaintProperty('data', 'circle-opacity', opacity);
-            if (opacity <= 0) {
-                radius = initialRadius;
-                opacity = initialOpacity;
-            } 
-        }, 1000 / framesPerSecond);
+        'id': 'isochrones-highlighted',
+        'type': 'fill',
+        'source': 'isochrones',
         
-    }
-    // Start the animation.
-    animateMarker(0);
-
-     map.on('data', function(e) {
-            if (e.dataType === 'source' && e.sourceId === 'roads') {
-                document.getElementById("loader").style.visibility = "hidden";
-            }
-        })
-
-  map.on('click', e => {
-        const bbox = [
-        [e.point.x - 10, e.point.y - 10],
-        [e.point.x + 10, e.point.y + 10]
-        ];
-        const features = map.queryRenderedFeatures(bbox, {
-        layers: ['routes']
+        'paint': {
+            'fill-color':  [
+               "case",
+               [
+                 "==",
+                 ["get", "state"],
+                 "current"
+               ],
+               "#50E7FF",
+               [
+                 "==",
+                 ["get", "state"],
+                 "plan"
+               ],
+               "hsla(216, 81%, 54%, 0.3)",
+               "#000000"
+            ],
+            'fill-opacity': 0.2
+        },
+        'filter': ["in", "point_id", ""]
     });
-        const filter = features.reduce((memo, feature) => {
-            memo.push(feature.properties.route_muid);
-      return memo;
-        }, ['in', 'route_muid']);
-    const lngLat = Object.values(e.lngLat);
-    const points = turf.featureCollection([
-        turf.point(lngLat)
-    ]);
-        //map.setFilter("routes-light1", filter);
-        map.setFilter("routes-light", filter);
-        map.setFilter("shield-light", filter);
-    map.getSource('circleData').setData(points);
+
+
+    map.addLayer({
+        'id': 'isochrones-highlighted2',
+        'type': 'line',
+        'source': 'isochrones',
+        
+        'paint': {
+            'line-color': [
+               "case",
+               [
+                 "==",
+                 ["get", "state"],
+                 "current"
+               ],
+               "#36BCE3",
+               [
+                 "==",
+                 ["get", "state"],
+                 "plan"
+               ],
+               "hsl(216, 81%, 54%)",
+               "#000000"
+            ],
+            "line-dasharray": [
+               "step",
+               ["zoom"],
+               ["literal", [1, 1]],
+               22,
+               ["literal", [2, 1]]
+            ],
+            "line-width": [
+              "interpolate",
+              ["exponential", 1.3],
+              ["zoom"],
+              9,
+              1,
+              22,
+              5
+            ] 
+        },
+        'filter': ["in", "point_id", ""]
     });
+    // map.addLayer({
+    //     "id": "routes",
+    //     "type": "line",
+    //     "source": "routes",
+    //     "paint": {
+    //         "line-color": [
+    //             "step",
+    //             ["get", "percieved_interval"],
+    //             "#E51746",
+    //             11,
+    //             "#FBBE2D",
+    //             21,
+    //             "#5478FF",
+    //             30,
+    //             "#73E382"
+    //         ],
+    //         "line-width":  [ 
+    //                 "interpolate", 
+    //                 [ 
+    //                     "exponential",
+    //                     1.15
+    //                 ], 
+    //                 [ 
+    //                     "zoom"
+    //                 ], 
+    //                 10, 
+    //                 [ 
+    //                     "step", 
+    //                     [ 
+    //                         "get", 
+    //                         "percieved_interval"
+    //                     ],
+    //                     1.5,
+    //                     11,
+    //                     1.1,
+    //                     21,
+    //                     0.75,
+    //                     30,
+    //                     0.55 
+                        
+    //                 ], 
+    //                 20, 
+    //                 [ 
+    //                     "step", 
+    //                     [ 
+    //                         "get", 
+    //                         "percieved_interval"
+    //                     ], 
+    //                     12,
+    //                     11,
+    //                     9,
+    //                     21,
+    //                     6,
+    //                     30,
+    //                     4 
+    //                 ]
+    //             ],
+    //         "line-offset" : [ 
+    //                 "interpolate", 
+    //                 [ 
+    //                     "exponential", 
+    //                     1.35
+    //                 ], 
+    //                 [ 
+    //                     "zoom"
+    //                 ], 
+    //                 10, 
+    //                 [ 
+    //                     "interpolate", 
+    //                     [ 
+    //                         "linear"
+    //                     ], 
+    //                     [ 
+    //                         "get", 
+    //                         "percieved_interval"
+    //                     ], 
+    //                     11,
+    //                     1.5,
+    //                     21,
+    //                     0.5,
+    //                     30,
+    //                     0
+    //                 ], 
+    //                 14, 
+    //                 [ 
+    //                     "interpolate", 
+    //                     [ 
+    //                         "linear"
+    //                     ], 
+    //                     [ 
+    //                         "get", 
+    //                         "percieved_interval"
+    //                     ], 
+    //                     11,
+    //                     4,
+    //                     21,
+    //                     2,
+    //                     30,
+    //                     0
+    //                 ], 
+    //                 19, 
+    //                 [ 
+    //                     "interpolate", 
+    //                     [ 
+    //                         "linear"
+    //                     ], 
+    //                     [ 
+    //                         "get", 
+    //                         "percieved_interval"
+    //                     ], 
+    //                     11,
+    //                     10.5,
+    //                     21,
+    //                     5.5,
+    //                     30,
+    //                     0
+    //                 ]
+    //             ]
+    //     }
+    // })
+
+
+    map.addLayer({
+        "id": "interaval_31",
+        "type": "line",
+        "source": "routes",
+        "filter": [">", ["number",["get", "percieved_interval"]], 31 ],
+        "paint": {
+            "line-color": "#6ce98f",
+            "line-width": [
+                "interpolate",
+                ["exponential", 1.21],
+                ["zoom"],
+                9,
+                1,
+                22,
+                12
+            ]
+        },
+        "layout": {
+            "line-join": "round"
+        }
+    });
+
+
+    map.addLayer({
+        "id": "interaval_30",
+        "type": "line",
+        "source": "routes",
+        "filter": ["all", ["<=", ["number",["get", "percieved_interval"]], 30 ], [">", ["number",["get", "percieved_interval"]], 21 ]],
+        "paint": {
+            "line-color": "#59bdf7",
+            "line-width": [
+                "interpolate",
+                ["exponential", 1.21],
+                ["zoom"],
+                9,
+                1.1,
+                22,
+                15
+            ]
+        },
+        "layout": {
+            "line-join": "round"
+        }
+    });
+
+
+    map.addLayer({
+        "id": "interaval_20",
+        "type": "line",
+        "source": "routes",
+        "filter": ["all", ["<=", ["number",["get", "percieved_interval"]], 20 ], [">", ["number",["get", "percieved_interval"]], 11 ]],
+        "paint": {
+            "line-color": "#ffa400",
+            "line-width": [
+                "interpolate",
+                ["exponential", 1.21],
+                ["zoom"],
+                9,
+                1.35,
+                22,
+                20
+            ]
+        },
+        "layout": {
+            "line-join": "round"
+        }
+    });
+    
+    
+    map.addLayer({
+        "id": "interaval_10",
+        "type": "line",
+        "source": "routes",
+        "filter": ["<=", ["number",["get", "percieved_interval"]], 10],
+        "paint": {
+            "line-color": "#ed0749",
+            "line-width": [
+                "interpolate",
+                ["exponential", 1.21],
+                ["zoom"],
+                9,
+                2.2,
+                22,
+                30
+            ]
+        },
+        "layout": {
+            "line-join": "round"
+        }
+    });
+
+    map.addLayer({
+        "id": "point",
+        "type": "circle",
+        "source": "points",
+        "paint": {
+            "circle-radius": 4,
+            "circle-color": "#5C82FF",
+            "circle-stroke-color": "#fff",
+            "circle-stroke-width": 1
+        }
+    });
+
+    
+    
+
+   filterBy(0);
+
+
+   document.getElementById('slider').addEventListener('input', function(e) {
+    var day_time = parseInt(e.target.value, 3);
+    filterBy(day_time);
+   
+    
 });
+
+   
+});
+
+
+
+
 </script>
 
 </body>
