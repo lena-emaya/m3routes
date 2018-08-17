@@ -106,7 +106,11 @@
 <div class=panel>
     <label id='day_time'></label>
     <input id='slider' type='range' min='0' max='2' step='1' value='0' />
-    <nav id="menu"></nav>  
+    <nav id="menu"></nav> 
+    <div class='session' id='sliderbar'>
+        <label id='active-hour'></label>
+        <input id='slider' class='row' type='range' min='15' max='45' step='15' value='15' />
+    </div> 
 <div>
 <script>
 
@@ -137,43 +141,13 @@ var day_times = [
     'evening'
 ];
  
-function filterBy(day_time) {
-
-var filters = ['==', 'day_time', day_time];
-map.setFilter('isochrones-highlighted', filters);
-map.setFilter('isochrones-highlighted2', filters);
-map.setLayoutProperty('isochrones-highlighted', 'visibility', 'none');
-map.setLayoutProperty('isochrones-highlighted2', 'visibility', 'none');
-//map.setPaintProperty('isochrones-highlighted', 'fill-opacity', 0);
-map.on('click', (e) => {
-        
-        var bbox = [[e.point.x - 2, e.point.y - 2], [e.point.x + 2, e.point.y + 2]];
-        var features= map.queryRenderedFeatures(bbox, { layers: ['isochrones'] });
-
-        
-        var filter = features.reduce(function(memo, feature) {
-            memo.push(feature.properties.point_id);
-            return memo;
-        }, ['in', 'point_id']);
-        var new_Filter = ['all',filter,filters]
-        map.setFilter("isochrones-highlighted", new_Filter );
-        map.setFilter("isochrones-highlighted2", new_Filter );
-        map.setLayoutProperty('isochrones-highlighted', 'visibility', 'visible');
-         map.setLayoutProperty('isochrones-highlighted2', 'visibility', 'visible');
-        
-        
-    });
-
-// Set the label to the month
-document.getElementById('day_time').textContent = day_times[day_time];
-}
 
 
 
 map.on( 'load', () => {
     map.addSource('isochrones', {
             'type': 'geojson',
-            'data': isochrones
+            'data': 'https://raw.githubusercontent.com/lena-emaya/m3routes/master/iso_4_merge.geojson'
     });
     map.addSource('points', {
             'type': 'geojson',
@@ -182,14 +156,11 @@ map.on( 'load', () => {
 
     map.addSource('routes', {
         'type': 'geojson',
-        'data': curroutes
+        'data': 'https://raw.githubusercontent.com/lena-emaya/m3routes/master/int.geojson'
     });
 
-    isochrones.features = isochrones.features.map(function(d) {
-            d.properties.day_time = d.properties.day_time;
-            
-            return d;
-    });
+    
+
 
     map.addLayer({
         'id': 'isochrones',
@@ -224,10 +195,24 @@ map.on( 'load', () => {
                "hsla(216, 81%, 54%, 0.3)",
                "#000000"
             ],
-            'fill-opacity': 0.2
+            'fill-opacity': 0.5
         },
-        'filter': ["in", "point_id", ""]
+        'filter': ['==', ['number', ['get', 'srez']], 15]
     });
+
+
+    document.getElementById('slider').addEventListener('input', function(e) {
+        var srez = parseInt(e.target.value);
+  // update the map
+  map.setFilter('isochrones-highlighted', ['==', ['number', ['get', 'srez']], srez]);
+
+  // converting 0-23 hour to AMPM format
+  var ampm = hour >= 12 ? 'PM' : 'AM';
+  var hour12 = hour % 12 ? hour % 12 : 12;
+
+  // update text in the UI
+  document.getElementById('active-hour').innerText = srez;
+});
 
 
     map.addLayer({
@@ -499,15 +484,7 @@ map.on( 'load', () => {
     
     
 
-   filterBy(0);
 
-
-   document.getElementById('slider').addEventListener('input', function(e) {
-    var day_time = parseInt(e.target.value, 3);
-    filterBy(day_time);
-   
-    
-});
 
    
 });
