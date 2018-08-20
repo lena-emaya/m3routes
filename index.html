@@ -42,29 +42,35 @@
         box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
        }
       
-    button {
+
+   
+
+    #menu {
         background: #fff;
         display: flex;
+        flex-direction: column;
         border-color: white;
-        margin: -5px;
+        margin: 5px;
         
     }
 
-    button a {
-        width: 100%;
+    #menu a {
+        width: 95%;
         font-size: 14px;
         color: #404040;
-        display: block;
-        margin: 5px -2px 5px -2px;
+        
+        margin: 5px 0px 5px -2px;
         padding: 6px;
         text-decoration: none;
         border-radius: 3px;
         text-align: left;
+        
     }
 
     a:hover{
         background-color: rgba(0, 0, 0, 0.05);
         border-radius: 3px;
+        margin-left: 3px;
     }
 
     a.active{
@@ -96,6 +102,7 @@
     
     
     transition: all 0.4s ease 0s;
+
     }
 
     .button:active{
@@ -233,7 +240,7 @@ li{
         <ul>
     </div> 
   
-    <button id="menu"></button> 
+    <div id="menu"></div> 
 <div>
 <script>
 
@@ -241,10 +248,10 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibW9zY293Y2l0eW1hcCIsImEiOiJjajc3ZnQ1aGUxem41M
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/moscowcitymap/cjiomhg5w29ta2sq80fv48hs2',
-    center: [37.623140, 55.755509],
+    center: [37.482572, 55.649367],
     minZoom: 9,
     maxZoom:18,
-    zoom: 9.5
+    zoom: 11.5
 });
 
 const points ={
@@ -262,7 +269,7 @@ const points ={
 
 map.on( 'load', () => {
     var filterSrez = ['==', ['number', ['get', 'srez']], 15];
-    var filterDay = ['!=', ['string', ['get', 'day_time']], 'placeholder'];
+    var filterDay = ['==', ['string', ['get', 'day_time']], 'morning'];
 
     map.addSource('isochrones', {
             'type': 'geojson',
@@ -276,6 +283,11 @@ map.on( 'load', () => {
     map.addSource('routes', {
         'type': 'geojson',
         'data': 'https://raw.githubusercontent.com/lena-emaya/m3routes/master/int.geojson'
+    });
+
+    map.addSource('plan_routes', {
+        'type': 'geojson',
+        'data': 'https://raw.githubusercontent.com/lena-emaya/m3routes/master/data/plan_routes.geojson'
     });
 
     
@@ -303,15 +315,15 @@ map.on( 'load', () => {
                [
                  "==",
                  ["get", "state"],
-                 "current"
+                 "plan"
                ],
-               "#50E7FF",
+               "#9982FF",
                [
                  "==",
                  ["get", "state"],
-                 "plan"
+                 "current"
                ],
-               "hsla(216, 81%, 54%, 0.3)",
+               "#A39EFF",
                [
                  "==",
                  ["get", "state"],
@@ -320,7 +332,7 @@ map.on( 'load', () => {
                "rgba(0,0,0,0)",
                "#000000"
             ],
-            'fill-opacity': 0.25
+            'fill-opacity': 0.2
         }
     });
 
@@ -335,15 +347,15 @@ map.on( 'load', () => {
                [
                  "==",
                  ["get", "state"],
-                 "current"
+                 "plan"
                ],
-               "#36BCE3",
+               "#9982FF",
                [
                  "==",
                  ["get", "state"],
-                 "plan"
+                 "current"
                ],
-               "hsl(216, 81%, 54%)",
+               "#A39EFF",
                [
                  "==",
                  ["get", "state"],
@@ -507,6 +519,19 @@ map.on( 'load', () => {
     });
 
 
+    map.addLayer({
+        "id": "Маршруты1",
+        "type": "line",
+        "source": "plan_routes",
+        "paint": {
+            "line-color": '#7482FF',
+            "line-width": 2
+        },
+        "layout": {
+            "visibility": "none"
+        }
+    });
+
 
     map.addLayer({
         "id": "point",
@@ -528,35 +553,69 @@ map.on( 'load', () => {
    
 });
 
-var toggleableLayerIds = [ "Маршруты" ];
 
-for (var i = 0; i < toggleableLayerIds.length; i++) {
-    var id = toggleableLayerIds[i];
 
-    var link = document.createElement('a');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
+// var toggleableLayerIds = [ "Маршруты", "Маршруты1" ];
 
-    link.onclick = function (e) {
-        var clickedLayer = this.textContent;
-        e.preventDefault();
-        e.stopPropagation();
+// for (var i = 0; i < toggleableLayerIds.length; i++) {
+//     var id = toggleableLayerIds[i];
 
-        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+//     var link = document.createElement('a');
+//     link.href = '#';
+//     link.className = 'active';
+//     link.textContent = name;
 
-        if (visibility === 'visible') {
-            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-            this.className = '';
-        } else {
-            this.className = 'active';
-            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        }
-    };
+//     link.onclick = function (e) {
+//         var clickedLayer = this.textContent;
+//         e.preventDefault();
+//         e.stopPropagation();
 
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-}
+//         var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+//         if (visibility === 'visible') {
+//             map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+//             this.className = '';
+//         } else {
+//             this.className = 'active';
+//             map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+//         }
+//     };
+
+//     var layers = document.getElementById('menu');
+//     layers.appendChild(link);
+// }
+
+
+
+      toggleLayer('1', ['Маршруты'], 'Cуществующие маршруты');
+      toggleLayer('2', ['Маршруты1'], 'Планируемые маршруты');
+      
+      function toggleLayer(id, ids, name) {
+        var link = document.createElement('a');
+        link.textContent = name;
+        
+       
+        link.onclick = function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          for (layers in ids) {
+            var visibility = map.getLayoutProperty(ids[layers], 'visibility');
+            if (visibility === 'visible') {
+              map.setLayoutProperty(ids[layers], 'visibility', 'none');
+              this.className = '';
+              
+            } else {
+              this.className = 'active';
+              map.setLayoutProperty(ids[layers], 'visibility', 'visible');
+              
+            }
+          }
+        };
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+      }
+    
 
 
 
