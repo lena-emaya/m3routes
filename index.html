@@ -42,75 +42,198 @@
         box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
        }
       
- #menu {
+    button {
         background: #fff;
         display: flex;
-        
-        margin: 7px;
-        border-radius: 3px;
-        width: 120px;
-        border: 1px solid rgba(0,0,0,0.4);
+        border-color: white;
+        margin: -5px;
         
     }
 
-    #menu a {
-        font-size: 13px;
+    button a {
+        width: 100%;
+        font-size: 14px;
         color: #404040;
         display: block;
-        margin: 0;
-        padding: 0;
-        padding: 10px;
+        margin: 5px -2px 5px -2px;
+        padding: 6px;
         text-decoration: none;
-        border-bottom: 1px solid rgba(0,0,0,0.25);
-        text-align: center;
+        border-radius: 3px;
+        text-align: left;
     }
 
-    #menu a:last-child {
-        border: none;
+    a:hover{
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 3px;
     }
 
-    #menu a:hover {
-        background-color: #f8f8f8;
-        color: #404040;
+    a.active{
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 3px;
     }
 
-    #menu a.active {
-        background-color: #3887be;
-        color: #ffffff;
-    }
-
-    #menu a.active:hover {
-        background: #3074a4;
-    }
+    
 
  
+
+    .row{
+        display: flex;
+        margin-top: 5px;
+        flex-direction: row;
+        padding: 5px;
+        justify-content: space-between;
+    }
+
+   .button{
+    margin-bottom: 10px;
+    text-align: left;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.4);
+    background-color: transparent;
+    padding: 3px 6px 6px;
+    
+    border-style: none;
+    
+    
+    transition: all 0.4s ease 0s;
+    }
+
+    .button:active{
+        color: #000000;
+    }
+
+    .button:focus {
+    outline: none;
+    }
+
+    input[type=range]{ 
+        width: 90%;
+    height: 30px;
+  padding: 5px;
+  margin: 5px;
+  background: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  }
+/* Focus styles */
+  input[type=range]:focus {
+    outline: none;
+  }
+  input[type=range]::-moz-focus-outer {
+    border: 0;
+  }
+/* Track styles */
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 2px;
+    border: none;
+    border-radius: 1px;
+    background-color: black;
+    top: 3px;
+  }
+  input[type=range]::-moz-range-track {
+    height: 2px;
+    border: none;
+    border-radius: 1px;
+    background-color: black;
+    top: 3px;
+  }
+  input[type=range]::-ms-track {
+    top: 3px;
+    height: 2px;
+    border: none;
+    border-radius: 1px;
+    background-color: black;
+  }
+  
+/* Thumb styles */
+  
+  
+  input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1.25px solid #000000;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -13px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+   /* Add cool effects to your sliders! */
+}
+
+/* All the same stuff for Firefox */
+input[type=range]::-moz-range-thumb {
+  
+  border: 1.25px solid #000000;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+/* All the same stuff for IE */
+input[type=range]::-ms-thumb {
+  
+  border: 1.25px solid #000000;
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+ul{
+    display: flex;
+    flex-direction: row;
+    
+    align-items: center;
+    justify-content: space-around;
+    
+}
+
+li{
+    display: flex;
+    flex-grow: 1;
+    margin: auto;
+    padding: 0px 15px 0px 15px;
+    color: rgb(0, 0, 0);
+    background-color: transparent;
+
+}
+
+
+
 
             
     </style>     
 </head>
 <body>
     
-<!-- <div class='panel'>
-    <div class='hourfilter'>
-        <div class='button'>утро</div>
-        <div class='button'>день</div>
-        <div class='button'>вечер</div>
-    </div>
-</div>     -->
 
-<!-- <div class='map-overlay-inner'>
-    
-</div> -->
    
 <div id='map'></div>
 <div class=panel>
-    <label id='day_time'></label>
-    <input id='slider' type='range' min='0' max='2' step='1' value='0' />
-    <nav id="menu"></nav> 
-    <div class='session' id='sliderbar'>
-        <label id='active-hour'></label>
+   
+    
+    
+    <div class='row' id='filters'>
+        <input class='button' id='morning' type='radio' name='toggle' value='morning' checked='checked'>Утро</input>
+         
+        <input class='button' id='day' type='radio' name='toggle' value='day'>День</input>
+         
+        <input class='button' id='evening' type='radio' name='toggle' value='evening'>Вечер</input>
+    </div>
+    <div  id='sliderbar'>
+        
         <input id='slider' class='row' type='range' min='15' max='45' step='15' value='15' />
+        <ul>
+            <li>15мин</li>
+            <li>30мин</li>
+            <li>45мин</li> 
+        <ul>
     </div> 
+  
+    <button id="menu"></button> 
 <div>
 <script>
 
@@ -135,16 +258,15 @@ const points ={
 ]
 }
 
-var day_times = [
-    'morning',
-    'day',
-    'evening'
-];
+
  
 
 
 
 map.on( 'load', () => {
+    var filterSrez = ['==', ['number', ['get', 'srez']], 15];
+    var filterDay = ['!=', ['string', ['get', 'day_time']], 'placeholder'];
+
     map.addSource('isochrones', {
             'type': 'geojson',
             'data': 'https://raw.githubusercontent.com/lena-emaya/m3routes/master/iso_4_merge.geojson'
@@ -177,7 +299,7 @@ map.on( 'load', () => {
         'id': 'isochrones-highlighted',
         'type': 'fill',
         'source': 'isochrones',
-        
+        'filter': ['all', filterSrez, filterDay],
         'paint': {
             'fill-color':  [
                "case",
@@ -195,31 +317,15 @@ map.on( 'load', () => {
                "hsla(216, 81%, 54%, 0.3)",
                "#000000"
             ],
-            'fill-opacity': 0.5
-        },
-        'filter': ['==', ['number', ['get', 'srez']], 15]
+            'fill-opacity': 0.25
+        }
     });
-
-
-    document.getElementById('slider').addEventListener('input', function(e) {
-        var srez = parseInt(e.target.value);
-  // update the map
-  map.setFilter('isochrones-highlighted', ['==', ['number', ['get', 'srez']], srez]);
-
-  // converting 0-23 hour to AMPM format
-  var ampm = hour >= 12 ? 'PM' : 'AM';
-  var hour12 = hour % 12 ? hour % 12 : 12;
-
-  // update text in the UI
-  document.getElementById('active-hour').innerText = srez;
-});
-
 
     map.addLayer({
         'id': 'isochrones-highlighted2',
         'type': 'line',
         'source': 'isochrones',
-        
+        'filter': ['all', filterSrez, filterDay],
         'paint': {
             'line-color': [
                "case",
@@ -253,221 +359,147 @@ map.on( 'load', () => {
               22,
               5
             ] 
-        },
-        'filter': ["in", "point_id", ""]
+        }
     });
+
+
+    document.getElementById('slider').addEventListener('input', function(e) {
+        var srez = parseInt(e.target.value);
+        
+        filterSrez = ['==', ['number', ['get', 'srez']], srez];
+        map.setFilter('isochrones-highlighted', ['all', filterSrez, filterDay]);
+        map.setFilter('isochrones-highlighted2', ['all', filterSrez, filterDay]);
+ 
+    //    document.getElementById('srezs').innerText = srez;
+    });
+
+    document.getElementById('filters').addEventListener('change', function(e) {
+        var day = e.target.value;
+        if (day === 'morning') {
+    
+        filterDay = ['!=', ['string', ['get', 'day_time']], 'morning'];
+        }
+  
+        map.setFilter('isochrones-highlighted', ['all', filterSrez, filterDay]);
+        map.setFilter('isochrones-highlighted2', ['all', filterSrez, filterDay]);
+    });
+
+
+    
+    map.addLayer({
+        "id": "Маршруты",
+        "type": "line",
+        "source": "routes",
+        "paint": {
+            "line-color": [
+                "step",
+                ["get", "percieved_interval"],
+                "#ed0749",
+                11,
+                "#ffa400",
+                21,
+                "#59bdf7",
+                30,
+                "#6ce98f"
+            ],
+            "line-width": 2
+        },
+        "layout": {
+            "visibility": "none"
+        }
+    });
+
+
     // map.addLayer({
-    //     "id": "routes",
+    //     "id": "interaval_31",
     //     "type": "line",
     //     "source": "routes",
+    //     "filter": [">", ["number",["get", "percieved_interval"]], 31 ],
     //     "paint": {
-    //         "line-color": [
-    //             "step",
-    //             ["get", "percieved_interval"],
-    //             "#E51746",
-    //             11,
-    //             "#FBBE2D",
-    //             21,
-    //             "#5478FF",
-    //             30,
-    //             "#73E382"
-    //         ],
-    //         "line-width":  [ 
-    //                 "interpolate", 
-    //                 [ 
-    //                     "exponential",
-    //                     1.15
-    //                 ], 
-    //                 [ 
-    //                     "zoom"
-    //                 ], 
-    //                 10, 
-    //                 [ 
-    //                     "step", 
-    //                     [ 
-    //                         "get", 
-    //                         "percieved_interval"
-    //                     ],
-    //                     1.5,
-    //                     11,
-    //                     1.1,
-    //                     21,
-    //                     0.75,
-    //                     30,
-    //                     0.55 
-                        
-    //                 ], 
-    //                 20, 
-    //                 [ 
-    //                     "step", 
-    //                     [ 
-    //                         "get", 
-    //                         "percieved_interval"
-    //                     ], 
-    //                     12,
-    //                     11,
-    //                     9,
-    //                     21,
-    //                     6,
-    //                     30,
-    //                     4 
-    //                 ]
-    //             ],
-    //         "line-offset" : [ 
-    //                 "interpolate", 
-    //                 [ 
-    //                     "exponential", 
-    //                     1.35
-    //                 ], 
-    //                 [ 
-    //                     "zoom"
-    //                 ], 
-    //                 10, 
-    //                 [ 
-    //                     "interpolate", 
-    //                     [ 
-    //                         "linear"
-    //                     ], 
-    //                     [ 
-    //                         "get", 
-    //                         "percieved_interval"
-    //                     ], 
-    //                     11,
-    //                     1.5,
-    //                     21,
-    //                     0.5,
-    //                     30,
-    //                     0
-    //                 ], 
-    //                 14, 
-    //                 [ 
-    //                     "interpolate", 
-    //                     [ 
-    //                         "linear"
-    //                     ], 
-    //                     [ 
-    //                         "get", 
-    //                         "percieved_interval"
-    //                     ], 
-    //                     11,
-    //                     4,
-    //                     21,
-    //                     2,
-    //                     30,
-    //                     0
-    //                 ], 
-    //                 19, 
-    //                 [ 
-    //                     "interpolate", 
-    //                     [ 
-    //                         "linear"
-    //                     ], 
-    //                     [ 
-    //                         "get", 
-    //                         "percieved_interval"
-    //                     ], 
-    //                     11,
-    //                     10.5,
-    //                     21,
-    //                     5.5,
-    //                     30,
-    //                     0
-    //                 ]
-    //             ]
+    //         "line-color": "#6ce98f",
+    //         "line-width": [
+    //             "interpolate",
+    //             ["exponential", 1.21],
+    //             ["zoom"],
+    //             9,
+    //             1,
+    //             22,
+    //             12
+    //         ]
+    //     },
+    //     "layout": {
+    //         "line-join": "round"
     //     }
-    // })
+    // });
 
 
-    map.addLayer({
-        "id": "interaval_31",
-        "type": "line",
-        "source": "routes",
-        "filter": [">", ["number",["get", "percieved_interval"]], 31 ],
-        "paint": {
-            "line-color": "#6ce98f",
-            "line-width": [
-                "interpolate",
-                ["exponential", 1.21],
-                ["zoom"],
-                9,
-                1,
-                22,
-                12
-            ]
-        },
-        "layout": {
-            "line-join": "round"
-        }
-    });
+    // map.addLayer({
+    //     "id": "interaval_30",
+    //     "type": "line",
+    //     "source": "routes",
+    //     "filter": ["all", ["<=", ["number",["get", "percieved_interval"]], 30 ], [">", ["number",["get", "percieved_interval"]], 21 ]],
+    //     "paint": {
+    //         "line-color": "#59bdf7",
+    //         "line-width": [
+    //             "interpolate",
+    //             ["exponential", 1.21],
+    //             ["zoom"],
+    //             9,
+    //             1.1,
+    //             22,
+    //             15
+    //         ]
+    //     },
+    //     "layout": {
+    //         "line-join": "round"
+    //     }
+    // });
 
 
-    map.addLayer({
-        "id": "interaval_30",
-        "type": "line",
-        "source": "routes",
-        "filter": ["all", ["<=", ["number",["get", "percieved_interval"]], 30 ], [">", ["number",["get", "percieved_interval"]], 21 ]],
-        "paint": {
-            "line-color": "#59bdf7",
-            "line-width": [
-                "interpolate",
-                ["exponential", 1.21],
-                ["zoom"],
-                9,
-                1.1,
-                22,
-                15
-            ]
-        },
-        "layout": {
-            "line-join": "round"
-        }
-    });
-
-
-    map.addLayer({
-        "id": "interaval_20",
-        "type": "line",
-        "source": "routes",
-        "filter": ["all", ["<=", ["number",["get", "percieved_interval"]], 20 ], [">", ["number",["get", "percieved_interval"]], 11 ]],
-        "paint": {
-            "line-color": "#ffa400",
-            "line-width": [
-                "interpolate",
-                ["exponential", 1.21],
-                ["zoom"],
-                9,
-                1.35,
-                22,
-                20
-            ]
-        },
-        "layout": {
-            "line-join": "round"
-        }
-    });
+    // map.addLayer({
+    //     "id": "interaval_20",
+    //     "type": "line",
+    //     "source": "routes",
+    //     "filter": ["all", ["<=", ["number",["get", "percieved_interval"]], 20 ], [">", ["number",["get", "percieved_interval"]], 11 ]],
+    //     "paint": {
+    //         "line-color": "#ffa400",
+    //         "line-width": [
+    //             "interpolate",
+    //             ["exponential", 1.21],
+    //             ["zoom"],
+    //             9,
+    //             1.35,
+    //             22,
+    //             20
+    //         ]
+    //     },
+    //     "layout": {
+    //         "line-join": "round"
+    //     }
+    // });
     
     
-    map.addLayer({
-        "id": "interaval_10",
-        "type": "line",
-        "source": "routes",
-        "filter": ["<=", ["number",["get", "percieved_interval"]], 10],
-        "paint": {
-            "line-color": "#ed0749",
-            "line-width": [
-                "interpolate",
-                ["exponential", 1.21],
-                ["zoom"],
-                9,
-                2.2,
-                22,
-                30
-            ]
-        },
-        "layout": {
-            "line-join": "round"
-        }
-    });
+    // map.addLayer({
+    //     "id": "interaval_10",
+    //     "type": "line",
+    //     "source": "routes",
+    //     "filter": ["<=", ["number",["get", "percieved_interval"]], 10],
+    //     "paint": {
+    //         "line-color": "#ed0749",
+    //         "line-width": [
+    //             "interpolate",
+    //             ["exponential", 1.21],
+    //             ["zoom"],
+    //             9,
+    //             2.2,
+    //             22,
+    //             30
+    //         ]
+    //     },
+    //     "layout": {
+    //         "line-join": "round"
+    //     }
+    // });
 
     map.addLayer({
         "id": "point",
@@ -488,6 +520,38 @@ map.on( 'load', () => {
 
    
 });
+
+var toggleableLayerIds = [ "Маршруты" ];
+
+for (var i = 0; i < toggleableLayerIds.length; i++) {
+    var id = toggleableLayerIds[i];
+
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+
+    link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+            this.className = '';
+        } else {
+            this.className = 'active';
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+    };
+
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+}
+
+
 
 
 
