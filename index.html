@@ -269,7 +269,7 @@ map.on( 'load', () => {
 
     map.addSource('isochrones', {
             'type': 'geojson',
-            'data': 'https://raw.githubusercontent.com/lena-emaya/m3routes/master/iso_4_merge.geojson'
+            'data': 'https://raw.githubusercontent.com/lena-emaya/m3routes/master/data/isochone_test_1.geojson'
     });
     map.addSource('points', {
             'type': 'geojson',
@@ -315,6 +315,12 @@ map.on( 'load', () => {
                  "plan"
                ],
                "hsla(216, 81%, 54%, 0.3)",
+               [
+                 "==",
+                 ["get", "state"],
+                 "plan_2"
+               ],
+               "hsla(216, 81%, 54%, 0.3)",
                "#000000"
             ],
             'fill-opacity': 0.25
@@ -339,6 +345,12 @@ map.on( 'load', () => {
                  "==",
                  ["get", "state"],
                  "plan"
+               ],
+               "hsl(216, 81%, 54%)",
+               [
+                 "==",
+                 ["get", "state"],
+                 "plan_2"
                ],
                "hsl(216, 81%, 54%)",
                "#000000"
