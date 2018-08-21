@@ -60,21 +60,21 @@
     }
 
     button {
-        width: 100%;
+      width: 100%;
       font-size: 14px;
-    border: none;
-   margin: 5px 0px 5px -2px;
-        padding: 6px;
-    text-decoration: none;
+      border: none;
+      margin: 5px 2px 5px -2px;
+      padding: 6px;
+      text-decoration: none;
     
-    color: #404040;
+      color: #404040;
     
-    text-align: left;
-    transition: background 250ms ease-in-out, 
+      text-align: left;
+      transition: background 250ms ease-in-out, 
                 transform 150ms ease;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      outline: none;
         
     }
 
@@ -92,9 +92,14 @@
     }
 
     button:active{
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.05);
         border-radius: 3px;
         border-color: white;
+    }
+
+
+    .row button {
+        text-align: center;
     }
 
     
@@ -105,8 +110,8 @@
         display: flex;
         margin-top: 5px;
         flex-direction: row;
-        padding: 5px;
-        justify-content: space-between;
+        padding: 1px;
+        justify-content: space-around;
     }
 
    .button{
@@ -153,14 +158,14 @@
     height: 2px;
     border: none;
     border-radius: 1px;
-    background-color: black;
+    background-color: #404040;
     top: 3px;
   }
   input[type=range]::-moz-range-track {
     height: 2px;
     border: none;
     border-radius: 1px;
-    background-color: black;
+    background-color: #404040;
     top: 3px;
   }
   input[type=range]::-ms-track {
@@ -168,7 +173,7 @@
     height: 2px;
     border: none;
     border-radius: 1px;
-    background-color: black;
+    background-color: #404040;
   }
   
 /* Thumb styles */
@@ -220,11 +225,11 @@ ul{
 li{
     display: flex;
     flex-grow: 1;
-    margin: auto;
-    padding: 0px 15px 0px 15px;
-    color: rgb(0, 0, 0);
+    margin-top: -10px;
+    padding: 0px 10px 0px 10px;
+    color: #404040;
     background-color: transparent;
-
+    white-space:nowrap;
 }
 
 
@@ -243,19 +248,23 @@ li{
     
     
     <div class='row' id='filters'>
-        <input class='button' id='morning' type='radio' name='toggle' value='morning' checked='checked'>Утро</input>
+        <!-- <input class='button' id='morning' type='button' name='toggle' value='morning' checked='checked'>Утро</input>
          
-        <input class='button' id='day' type='radio' name='toggle' value='day'>День</input>
+        <input class='button' id='day' type='button' name='toggle' value='day'>День</input>
          
-        <input class='button' id='evening' type='radio' name='toggle' value='evening'>Вечер</input>
+        <input class='button' id='evening' type='button' name='toggle' value='evening'>Вечер</input> -->
+        <button id='morning' value='morning'>Утро</button>
+        <button id='day' value='day'>День</button>
+        <button id='evening' value='evening'>Вечер</button>
+
     </div>
     <div  id='sliderbar'>
         
         <input id='slider' class='row' type='range' min='15' max='45' step='15' value='15' />
         <ul>
-          <li>15мин</li>
-          <li>30мин</li>
-          <li>45мин</li> 
+          <li>15 мин</li>
+          <li>30 мин</li>
+          <li>45 мин</li> 
         </ul>
     </div> 
   
@@ -417,18 +426,56 @@ map.on( 'load', () => {
     //    document.getElementById('srezs').innerText = srez;
     });
 
-    document.getElementById('filters').addEventListener('input', function(e) {
-        var day = e.target.value;
-        // if (day === 'morning') {
-    
-        
-        // }
 
+
+var morningButton = document.getElementById('morning');
+      morningButton.onclick = function(e) {
+          var day = e.target.value;
+        
         filterDay = ['==', ['string', ['get', 'day_time']], day];
-  
+        morningButton.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        morningButton.style.borderRadius = '3px';
+        dayButton.style.backgroundColor = '';
+        eveningButton.style.backgroundColor = '';
         map.setFilter('isochrones-highlighted', ['all', filterSrez, filterDay]);
         map.setFilter('isochrones-highlighted2', ['all', filterSrez, filterDay]);
-    });
+};
+
+var dayButton = document.getElementById('day');
+      dayButton.onclick = function(y) {
+          var day = y.target.value;
+        
+        filterDay = ['==', ['string', ['get', 'day_time']], day];
+        dayButton.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        dayButton.style.borderRadius = '3px';
+        morningButton.style.backgroundColor = '';
+        eveningButton.style.backgroundColor = '';
+        map.setFilter('isochrones-highlighted', ['all', filterSrez, filterDay]);
+        map.setFilter('isochrones-highlighted2', ['all', filterSrez, filterDay]);
+};
+
+var eveningButton = document.getElementById('evening');
+      eveningButton.onclick = function(x) {
+          var day = x.target.value;
+        
+        filterDay = ['==', ['string', ['get', 'day_time']], day];
+        eveningButton.style.borderRadius = '3px';
+        eveningButton.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        morningButton.style.backgroundColor = '';
+        dayButton.style.backgroundColor = '';
+        map.setFilter('isochrones-highlighted', ['all', filterSrez, filterDay]);
+        map.setFilter('isochrones-highlighted2', ['all', filterSrez, filterDay]);
+};
+
+
+    // document.getElementById('filters').addEventListener('change', function(e) {
+    //     var day = e.target.value;
+        
+    //     filterDay = ['==', ['string', ['get', 'day_time']], day];
+  
+    //     map.setFilter('isochrones-highlighted', ['all', filterSrez, filterDay]);
+    //     map.setFilter('isochrones-highlighted2', ['all', filterSrez, filterDay]);
+    // });
 
 
     
